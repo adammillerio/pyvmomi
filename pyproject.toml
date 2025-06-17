@@ -1,0 +1,70 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pyvmomi"
+dynamic = ["version"]
+authors = [
+    {name = "Broadcom Inc."},
+]
+maintainers = [
+    {email = "daniel.draganov@broadcom.com"},
+    {email = "stefan.hristov@broadcom.com"},
+]
+description = "VMware vSphere Python SDK"
+readme = "README.rst"
+license = {text = "License :: OSI Approved :: Apache Software License"}
+keywords= ["pyvmomi", "vsphere", "vmware", "esx"]
+classifiers = [
+    'Development Status :: 5 - Production/Stable',
+    'License :: OSI Approved :: Apache Software License',
+    'Intended Audience :: Information Technology',
+    'Intended Audience :: System Administrators',
+    'Intended Audience :: Developers',
+    'Environment :: No Input/Output (Daemon)',
+    'Programming Language :: Python :: 3.9',
+    'Programming Language :: Python :: 3.10',
+    'Programming Language :: Python :: 3.11',
+    'Programming Language :: Python :: 3.12',
+    'Programming Language :: Python :: 3.13',
+    'Topic :: Software Development :: Libraries :: Python Modules',
+    'Topic :: System :: Distributed Computing',
+    'Operating System :: Microsoft :: Windows',
+    'Operating System :: POSIX',
+    'Operating System :: Unix',
+    'Operating System :: MacOS',
+]
+
+[project.optional-dependencies]
+sso = [
+    "pyOpenSSL<24.3.0",
+    "lxml",
+]
+
+[project.urls]
+Homepage = "https://developer.broadcom.com/sdks/pyvmomi/latest"
+
+[tool.setuptools]
+packages = ['pyVmomi', 'pyVim']
+py-modules = ['vsanapiutils', 'vsanmgmtObjects']
+platforms = ['Linux', 'Mac OS-X', 'Solaris', 'Windows', 'Unix']
+zip-safe = true
+
+[tool.setuptools.package-data]
+pyVmomi = ["**/*.pyi", "py.typed"]
+
+[tool.setuptools.dynamic]
+version = {attr = "pyVmomi.version_info"}
+
+[tool.tox]
+env_list = ["3.9", "3.10", "3.11", "3.12", "3.13"]
+
+[tool.tox.env_run_base]
+description = "Run test under {base_python}"
+deps = [
+    "mock",
+    "discover",
+    "vcrpy==3.0.0",
+]
+commands = [["python", "-m", "unittest", "discover", "tests"]]
