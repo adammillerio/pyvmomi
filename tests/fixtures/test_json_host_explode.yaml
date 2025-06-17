@@ -2275,8 +2275,7 @@ interactions:
         xsi:type=\"xsd:string\">none</value></option><option><key>Misc.DefaultHardwareVersion</key><value
         xsi:type=\"xsd:string\"></value></option><option><key>Misc.DegradedPathEvalTime</key><value
         xsi:type=\"xsd:long\">5</value></option><option><key>Misc.DegradedPathReEvalInterval</key><value
-        xsi:type=\"xsd:long\">60</value></option><option><key>Misc.EnablePSPLatencyPolicy</key><value
-        xsi:type=\"xsd:long\">1</value></option><option><key>Misc.GDBPort</key><value
+        xsi:type=\"xsd:long\">60</value></option><option><key>Misc.GDBPort</key><value
         xsi:type=\"xsd:string\">none</value></option><option><key>Misc.GuestLibAllowHostInfo</key><value
         xsi:type=\"xsd:long\">0</value></option><option><key>Misc.HeapMgrGuardPages</key><value
         xsi:type=\"xsd:long\">512</value></option><option><key>Misc.HeapPanicDestroyNonEmpty</key><value
@@ -4001,9 +4000,7 @@ interactions:
         time (in secs) for paths to mark the path as degraded</summary><key>Misc.DegradedPathEvalTime</key><optionType
         xsi:type=\"LongOption\"><valueIsReadonly>false</valueIsReadonly><min>0</min><max>500</max><defaultValue>5</defaultValue></optionType></optionDef><optionDef><label>DegradedPathReEvalInterval</label><summary>Re-evaluation
         interval (in secs) for the degraded paths</summary><key>Misc.DegradedPathReEvalInterval</key><optionType
-        xsi:type=\"LongOption\"><valueIsReadonly>false</valueIsReadonly><min>60</min><max>600</max><defaultValue>60</defaultValue></optionType></optionDef><optionDef><label>EnablePSPLatencyPolicy</label><summary>Enable
-        latency based sub-policy of Round-robin path selection plugin</summary><key>Misc.EnablePSPLatencyPolicy</key><optionType
-        xsi:type=\"LongOption\"><valueIsReadonly>false</valueIsReadonly><min>0</min><max>1</max><defaultValue>1</defaultValue></optionType></optionDef><optionDef><label>GDBPort</label><summary>Name
+        xsi:type=\"LongOption\"><valueIsReadonly>false</valueIsReadonly><min>60</min><max>600</max><defaultValue>60</defaultValue></optionType></optionDef><optionDef><label>GDBPort</label><summary>Name
         of serial port to use for GDB debugging (COM1, COM2)</summary><key>Misc.GDBPort</key><optionType
         xsi:type=\"StringOption\"><valueIsReadonly>false</valueIsReadonly><defaultValue>none</defaultValue><validCharacters>**</validCharacters></optionType></optionDef><optionDef><label>GuestLibAllowHostInfo</label><summary>Allow
         guest to read host-level metrics</summary><key>Misc.GuestLibAllowHostInfo</key><optionType

@@ -1,6 +1,6 @@
 # VMware vSphere Python SDK tests
 #
-# Copyright (c) 2017-2024 Broadcom. All Rights Reserved.
+# Copyright (c) 2017-2025 Broadcom. All Rights Reserved.
 # The term "Broadcom" refers to Broadcom Inc. and/or its subsidiaries.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -52,13 +52,13 @@ class PBMTests(tests.VCRTestBase):
 
     @tests.VCRTestBase.my_vcr.use_cassette('pbm_check_compatibility.yaml',
                                            cassette_library_dir=tests.fixtures_path,
-                                           record_mode='Once')
+                                           record_mode='once')
     def test_pbm_check_compatibility(self):
 
         si = SmartConnect(host='vcsa',
-                               user='Administrator@vsphere.local',
-                               pwd='Admin!23',
-                               disableSslCertValidation=True)
+                          user='my_user',
+                          pwd='my_password',
+                          disableSslCertValidation=True)
 
         # Connect to SPBM Endpoint
         pbm_content = self.get_pbm_connection(si._stub)

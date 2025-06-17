@@ -1,6 +1,6 @@
 # VMware vSphere Python SDK tests
 #
-# Copyright (c) 2008-2024 Broadcom. All Rights Reserved.
+# Copyright (c) 2008-2025 Broadcom. All Rights Reserved.
 # The term "Broadcom" refers to Broadcom Inc. and/or its subsidiaries.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,14 +17,13 @@
 
 import logging
 import os
-import socket
 import unittest
 
-import vcr
 from vcr import config
-from vcr.stubs import VCRHTTPSConnection
+from vcr.stubs import VCRHTTPConnection, VCRHTTPSConnection
 
 from pyVmomi import SoapAdapter
+from pyVim import connect
 
 
 def tests_resource_path(local_path=''):
@@ -34,18 +33,17 @@ def tests_resource_path(local_path=''):
 # Fully qualified path to the fixtures directory underneath this module
 fixtures_path = tests_resource_path('fixtures')
 
-
-def monkey_patch_vcrpy():
-    # TODO (hartsock): This should be unnecessary. Remove after vcrpy updates.
-    vcr.stubs.VCRHTTPSConnection.is_verified = True
-    vcr.stubs.VCRFakeSocket = socket.socket
-
 class VCRTestBase(unittest.TestCase):
     my_vcr = config.VCR(
-        custom_patches=((SoapAdapter, 'HTTPSConnection', VCRHTTPSConnection),))
+        custom_patches=(
+            (SoapAdapter, 'HTTPConnection', VCRHTTPConnection),
+            (SoapAdapter, 'HTTPSConnection', VCRHTTPSConnection),
+            (connect, 'HTTPConnection', VCRHTTPConnection),
+            (connect, 'HTTPSConnection', VCRHTTPSConnection),
+        )
+    )
 
     def setUp(self):
-        monkey_patch_vcrpy()
         logging.basicConfig()
         vcr_log = logging.getLogger('vcr')
         vcr_log.setLevel(logging.WARNING)

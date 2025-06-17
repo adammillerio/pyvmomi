@@ -99,7 +99,7 @@ interactions:
       xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
-      <soapenv:Body><Login xmlns="urn:vim25"><_this type="SessionManager">SessionManager</_this><userName>Administrator@vsphere.local</userName><password>Admin!23</password></Login></soapenv:Body>
+      <soapenv:Body><Login xmlns="urn:vim25"><_this type="SessionManager">SessionManager</_this><userName>my_user</userName><password>my_password</password></Login></soapenv:Body>
 
       </soapenv:Envelope>'
     headers:

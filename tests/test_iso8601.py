@@ -1,6 +1,6 @@
 # VMware vSphere Python SDK tests
 #
-# Copyright (c) 2008-2024 Broadcom. All Rights Reserved.
+# Copyright (c) 2008-2025 Broadcom. All Rights Reserved.
 # The term "Broadcom" refers to Broadcom Inc. and/or its subsidiaries.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -81,19 +81,16 @@ class Iso8601Tests(tests.VCRTestBase):
                         return False
             return True
 
-        my_vcr = config.VCR(
-            custom_patches=(
-                (SoapAdapter, 'HTTPSConnection', VCRHTTPSConnection),))
-        my_vcr.register_matcher('document', check_date_time_value)
+        self.my_vcr.register_matcher('document', check_date_time_value)
 
         # NOTE (hartsock): the `match_on` option is altered to use the
         # look at the XML body sent to the server
-        with my_vcr.use_cassette('iso8601_set_datetime.yaml',
+        with self.my_vcr.use_cassette('iso8601_set_datetime.yaml',
                                  cassette_library_dir=tests.fixtures_path,
                                  record_mode='once',
                                  match_on=['method', 'scheme', 'host', 'port',
                                            'path', 'query', 'document'], decode_compressed_response=True):
-            
+
             si = connect.SmartConnect(host='vcsa',
                                       user='my_user',
                                       pwd='my_password')

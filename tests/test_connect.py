@@ -1,6 +1,6 @@
 # VMware vSphere Python SDK tests
 #
-# Copyright (c) 2008-2024 Broadcom. All Rights Reserved.
+# Copyright (c) 2008-2025 Broadcom. All Rights Reserved.
 # The term "Broadcom" refers to Broadcom Inc. and/or its subsidiaries.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,6 +20,7 @@ import unittest
 import sys
 
 from pyVim import connect
+from pyVim.connect import TOKEN_TYPE_SSPI
 from pyVmomi import vim
 
 if sys.version_info >= (3, 3):
@@ -53,8 +54,8 @@ class ConnectionTests(tests.VCRTestBase):
     def test_sspi_connection(self):
         # see: http://python3porting.com/noconv.html
         si = connect.Connect(host='vcsa',
-                             mechanism='sspi',
-                             b64token='my_base64token')
+                             tokenType=TOKEN_TYPE_SSPI,
+                             token='my_base64token')
         cookie = si._stub.cookie
         session_id = si.content.sessionManager.currentSession.key
         # NOTE (hartsock): The cookie value should never change during
@@ -111,26 +112,97 @@ class ConnectionTests(tests.VCRTestBase):
     def test_http_proxy(self):
         connect.SoapStubAdapter('sdkTunnel', 8089, httpProxyHost='vcsa').GetConnection()
 
-    @patch('six.moves.http_client.HTTPSConnection')
-    def test_http_proxy_with_cert_file(self, hs):
+
+    @patch('ssl.SSLContext.load_cert_chain')
+    @patch('pyVmomi.SoapAdapter.HTTPSConnection')
+    def test_http_proxy_with_cert_file(self, https_conn, ssl_ctx):
+        certFile = 'my_cert_file'
+        certKeyFile = 'my_key_file'
         conn = connect.SoapStubAdapter(
-            'sdkTunnel', 8089, httpProxyHost='vcsa',
-            certKeyFile='my_key_file', certFile='my_cert_file').GetConnection()
+            'sdkTunnel',
+            8089,
+            httpProxyHost='vcsa',
+            certKeyFile=certKeyFile,
+            certFile=certFile
+        ).GetConnection()
         conn.request('GET', '/')
-        hs.assert_called_once_with('vcsa:80', cert_file='my_cert_file', key_file='my_key_file')
-        conn.set_tunnel.assert_called_once_with('sdkTunnel:8089', headers={})
+        https_conn.assert_called_once_with(host='vcsa', port=80, context=unittest.mock.ANY)
+        conn.set_tunnel.assert_called_once_with('sdkTunnel', 8089, {})
+        ssl_ctx.assert_called_once_with(certFile, certKeyFile)
 
     @tests.VCRTestBase.my_vcr.use_cassette('http_proxy.yaml',
                       cassette_library_dir=tests.fixtures_path,
                       record_mode='once')
     def test_http_proxy(self):
         conn = connect.SoapStubAdapter(
-            'vcenter.test', httpProxyHost='my-http-proxy',
-            httpProxyPort=8080).GetConnection()
+            'vcenter.test',
+            httpProxyHost='my-http-proxy',
+            httpProxyPort=8080
+        ).GetConnection()
         self.assertEqual(conn._tunnel_host, 'vcenter.test')
         self.assertEqual(conn._tunnel_port, 443)
         conn.request('GET', '/')
         conn.getresponse()
+
+    @patch('pyVmomi.SoapAdapter.HTTPSConnection')
+    def test_host_attr_ipv4(self, https_conn):
+        connect.SoapStubAdapter(
+            host="123.123.123.123"
+        ).GetConnection()
+        https_conn.assert_called_with(host='123.123.123.123', port=443)
+
+        connect.SoapStubAdapter(host="123.123.123.123", port=1234).GetConnection()
+        https_conn.assert_called_with(host='123.123.123.123', port=1234)
+
+    @patch('pyVmomi.SoapAdapter.HTTPConnection')
+    @patch('pyVmomi.SoapAdapter.HTTPSConnection')
+    def test_url_attr_ipv4(self, https_conn, http_conn):
+        connect.SoapStubAdapter(url="http://123.123.123.123/testpath").GetConnection()
+        http_conn.assert_called_with(host='123.123.123.123', port=http_conn.default_port)
+
+        connect.SoapStubAdapter(url="https://123.123.123.123:1234/testpath").GetConnection()
+        https_conn.assert_called_with(host='123.123.123.123', port=1234)
+
+    @patch('pyVmomi.SoapAdapter.HTTPSConnection')
+    def test_host_attr_ipv6(self, https_conn):
+        connect.SoapStubAdapter(host="fd00:0:0:0:0:0:7:3001").GetConnection()
+        https_conn.assert_called_with(host='fd00:0:0:0:0:0:7:3001', port=443)
+
+        connect.SoapStubAdapter(host="fd00:0:0:0:0:0:7:3001", port=1234).GetConnection()
+        https_conn.assert_called_with(host='fd00:0:0:0:0:0:7:3001', port=1234)
+
+        connect.SoapStubAdapter(host="[fd00:0:0:0:0:0:7:3001]").GetConnection()
+        https_conn.assert_called_with(host='fd00:0:0:0:0:0:7:3001', port=443)
+
+        connect.SoapStubAdapter(host="[fd00:0:0:0:0:0:7:3001]", port=1234).GetConnection()
+        https_conn.assert_called_with(host='fd00:0:0:0:0:0:7:3001', port=1234)
+
+        connect.SoapStubAdapter(host="[fd00:0:0:0:0:0:7:3001", port=1234).GetConnection()
+        https_conn.assert_called_with(host='[fd00:0:0:0:0:0:7:3001', port=1234)
+
+    @patch('pyVmomi.SoapAdapter.HTTPSConnection')
+    def test_url_attr_ipv6(self, https_conn):
+        connect.SoapStubAdapter(url="https://[fd00:0:0:0:0:0:7:3001]/testpath").GetConnection()
+        https_conn.assert_called_with(host='fd00:0:0:0:0:0:7:3001', port=https_conn.default_port)
+
+        connect.SoapStubAdapter(url="https://[fd00:0:0:0:0:0:7:3001]:1234/testpath").GetConnection()
+        https_conn.assert_called_with(host='fd00:0:0:0:0:0:7:3001', port=1234)
+
+    @patch('pyVmomi.SoapAdapter.HTTPConnection')
+    @patch('pyVmomi.SoapAdapter.HTTPSConnection')
+    def test_negative_port(self, https_conn, http_conn):
+        connect.SoapStubAdapter(host='fd00:0:0:0:0:0:7:3001', port=-1234).GetConnection()
+        https_conn.assert_not_called()
+        http_conn.assert_called_with(host='fd00:0:0:0:0:0:7:3001', port=1234)
+
+    @patch('pyVmomi.SoapAdapter.HTTPSConnection')
+    def test_url_priority(self, https_conn):
+        connect.SoapStubAdapter(
+            host='fd00:0:0:0:0:0:7:3001',
+            port=-1234,
+            url="https://123.123.123.123/testpath"
+        ).GetConnection()
+        https_conn.assert_called_with(host='123.123.123.123', port=https_conn.default_port)
 
 
 if __name__ == '__main__':
