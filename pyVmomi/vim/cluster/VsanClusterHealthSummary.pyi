@@ -1,4 +1,4 @@
-# Copyright (c) 2006-2024 Broadcom. All Rights Reserved.
+# Copyright (c) 2006-2025 Broadcom. All Rights Reserved.
 # Broadcom Confidential. The term "Broadcom" refers to Broadcom Inc.
 # and/or its subsidiaries.
 
@@ -18,6 +18,7 @@ from pyVmomi.vim.cluster import VsanClusterClomdLivenessResult
 from pyVmomi.vim.cluster import VsanClusterDitEncryptionHealthSummary
 from pyVmomi.vim.cluster import VsanClusterEncryptionHealthSummary
 from pyVmomi.vim.cluster import VsanClusterFileServiceHealthSummary
+from pyVmomi.vim.cluster import VsanClusterGlobalDedupHealthSummary
 from pyVmomi.vim.cluster import VsanClusterHclInfo
 from pyVmomi.vim.cluster import VsanClusterHealthGroup
 from pyVmomi.vim.cluster import VsanClusterHealthSystemStatusResult
@@ -63,3 +64,4 @@ class VsanClusterHealthSummary(DynamicData):
    fileServiceHealth: Optional[VsanClusterFileServiceHealthSummary] = None
    ditEncryptionHealth: Optional[VsanClusterDitEncryptionHealthSummary] = None
    healthScore: Optional[int] = None
+   globalDedupHealth: Optional[VsanClusterGlobalDedupHealthSummary] = None

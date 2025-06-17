@@ -1,4 +1,4 @@
-# Copyright (c) 2006-2024 Broadcom. All Rights Reserved.
+# Copyright (c) 2006-2025 Broadcom. All Rights Reserved.
 # Broadcom Confidential. The term "Broadcom" refers to Broadcom Inc.
 # and/or its subsidiaries.
 
@@ -6,6 +6,7 @@
 
 from typing import Optional
 
+from pyVmomi.vim.cluster import SiteFaultDomainConfig
 from pyVmomi.vim.cluster import VsanIscsiTargetServiceConfig
 from pyVmomi.vim.cluster import VsanPerfsvcConfig
 
@@ -20,6 +21,7 @@ from pyVmomi.vim.vsan import ResyncIopsInfo
 from pyVmomi.vim.vsan import SnapServiceConfig
 from pyVmomi.vim.vsan import VcRemoteVsanServerClusterConfig
 from pyVmomi.vim.vsan import VsanDatastoreDefaultPolicySelectionConfig
+from pyVmomi.vim.vsan import VsanDeconvergedNetConfig
 from pyVmomi.vim.vsan import VsanEsaConfigInfo
 from pyVmomi.vim.vsan import VsanExtendedConfig
 from pyVmomi.vim.vsan import VsanHealthConfigSpec
@@ -52,3 +54,5 @@ class ConfigInfoEx(ConfigInfo):
    serverClusterConfig: Optional[VcRemoteVsanServerClusterConfig] = None
    datastoreDefaultPolicySelectionConfig: Optional[VsanDatastoreDefaultPolicySelectionConfig] = None
    snapServiceConfig: Optional[SnapServiceConfig] = None
+   deconvergedNetConfig: Optional[VsanDeconvergedNetConfig] = None
+   siteFaultDomainConfig: Optional[SiteFaultDomainConfig] = None

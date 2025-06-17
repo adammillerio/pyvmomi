@@ -1,4 +1,4 @@
-# Copyright (c) 2006-2024 Broadcom. All Rights Reserved.
+# Copyright (c) 2006-2025 Broadcom. All Rights Reserved.
 # Broadcom Confidential. The term "Broadcom" refers to Broadcom Inc.
 # and/or its subsidiaries.
 
@@ -28,6 +28,7 @@ class Summary(DynamicData):
    class HardwareSummary(DynamicData):
       vendor: str
       model: str
+      family: Optional[str] = None
       uuid: str
       otherIdentifyingInfo: list[SystemIdentificationInfo] = []
       memorySize: long
@@ -51,6 +52,7 @@ class Summary(DynamicData):
       name: str
       port: int
       sslThumbprint: Optional[str] = None
+      sslCertificate: Optional[str] = None
       product: Optional[AboutInfo] = None
       vmotionEnabled: bool
       faultToleranceEnabled: bool

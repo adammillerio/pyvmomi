@@ -1,4 +1,4 @@
-# Copyright (c) 2006-2024 Broadcom. All Rights Reserved.
+# Copyright (c) 2006-2025 Broadcom. All Rights Reserved.
 # Broadcom Confidential. The term "Broadcom" refers to Broadcom Inc.
 # and/or its subsidiaries.
 
@@ -24,6 +24,7 @@ from pyVmomi.vim.cluster import SystemVMsConfigSpec
 from pyVmomi.vim.cluster import VmOrchestrationSpec
 
 from pyVmomi.vim.vsan.cluster import ConfigInfo
+from pyVmomi.vim.vsan.cluster import CoreConfigSpec
 
 from pyVmomi.vim.vsan.host import ConfigInfo
 
@@ -45,3 +46,4 @@ class ConfigSpecEx(ComputeResource.ConfigSpec):
    proactiveDrsConfig: Optional[ProactiveDrsConfigInfo] = None
    inHciWorkflow: Optional[bool] = None
    cryptoConfig: Optional[CryptoConfigInfo] = None
+   vsanCoreConfigSpec: Optional[CoreConfigSpec] = None

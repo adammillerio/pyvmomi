@@ -1,4 +1,4 @@
-# Copyright (c) 2006-2024 Broadcom. All Rights Reserved.
+# Copyright (c) 2006-2025 Broadcom. All Rights Reserved.
 # Broadcom Confidential. The term "Broadcom" refers to Broadcom Inc.
 # and/or its subsidiaries.
 
@@ -38,6 +38,7 @@ class VmwareDistributedVirtualSwitch(DistributedVirtualSwitch):
       dpuCapability: Optional[DpuFeatureCapability] = None
       nsxSupported: Optional[bool] = None
       mtuCapability: Optional[MtuCapability] = None
+      realTimeConfigSupported: Optional[bool] = None
 
    class IpfixFeatureCapability(DynamicData):
       ipfixSupported: Optional[bool] = None
@@ -102,7 +103,7 @@ class VmwareDistributedVirtualSwitch(DistributedVirtualSwitch):
       collectorPort: Optional[int] = None
       observationDomainId: Optional[long] = None
       activeFlowTimeout: int
-      idleFlowTimeout: int
+      idleFlowTimeout: Optional[int] = None
       samplingRate: int
       internalFlowsOnly: bool
 
@@ -112,6 +113,14 @@ class VmwareDistributedVirtualSwitch(DistributedVirtualSwitch):
 
    class NetworkOffloadConfig(DynamicData):
       dpuFailoverPolicy: Optional[DpuFailoverPolicy] = None
+
+   class RealTimeLanAnnotation(DynamicData):
+      lanAUplink: list[str] = []
+      lanBUplink: list[str] = []
+
+   class RealTimeConfig(DynamicData):
+      allowed: Optional[bool] = None
+      lanAnnotation: Optional[RealTimeLanAnnotation] = None
 
    class ConfigInfo(DistributedVirtualSwitch.ConfigInfo):
       vspanSession: list[VspanSession] = []
@@ -124,6 +133,7 @@ class VmwareDistributedVirtualSwitch(DistributedVirtualSwitch):
       multicastFilteringMode: Optional[str] = None
       networkOffloadSpecId: Optional[str] = None
       networkOffloadConfig: Optional[NetworkOffloadConfig] = None
+      realTimeConfig: Optional[RealTimeConfig] = None
 
    class ConfigSpec(DistributedVirtualSwitch.ConfigSpec):
       pvlanConfigSpec: list[PvlanConfigSpec] = []
@@ -135,6 +145,7 @@ class VmwareDistributedVirtualSwitch(DistributedVirtualSwitch):
       multicastFilteringMode: Optional[str] = None
       networkOffloadSpecId: Optional[str] = None
       networkOffloadConfig: Optional[NetworkOffloadConfig] = None
+      realTimeConfig: Optional[RealTimeConfig] = None
 
    class UplinkPortOrderPolicy(InheritablePolicy):
       activeUplinkPort: list[str] = []

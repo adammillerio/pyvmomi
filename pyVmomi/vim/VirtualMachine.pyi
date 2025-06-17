@@ -1,4 +1,4 @@
-# Copyright (c) 2006-2024 Broadcom. All Rights Reserved.
+# Copyright (c) 2006-2025 Broadcom. All Rights Reserved.
 # Broadcom Confidential. The term "Broadcom" refers to Broadcom Inc.
 # and/or its subsidiaries.
 
@@ -91,6 +91,7 @@ class VirtualMachine(ManagedEntity):
       port: Optional[int] = None
       sslThumbprint: Optional[str] = None
       certThumbprintList: list[CertThumbprint] = []
+      sslCertificate: Optional[str] = None
       url: Optional[str] = None
 
    class MksTicket(DynamicData):

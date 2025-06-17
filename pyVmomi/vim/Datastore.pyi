@@ -1,4 +1,4 @@
-# Copyright (c) 2006-2024 Broadcom. All Rights Reserved.
+# Copyright (c) 2006-2025 Broadcom. All Rights Reserved.
 # Broadcom Confidential. The term "Broadcom" refers to Broadcom Inc.
 # and/or its subsidiaries.
 
@@ -35,6 +35,11 @@ class Datastore(ManagedEntity):
       # False: ClassVar['Accessible'] = 'False'
       pass
 
+   class SectorFormat(Enum):
+      native_512: ClassVar['SectorFormat'] = 'native_512'
+      emulated_512: ClassVar['SectorFormat'] = 'emulated_512'
+      native_4k: ClassVar['SectorFormat'] = 'native_4k'
+
    class Summary(DynamicData):
       class MaintenanceModeState(Enum):
          normal: ClassVar['MaintenanceModeState'] = 'normal'
@@ -62,6 +67,9 @@ class Datastore(ManagedEntity):
       timestamp: Optional[datetime] = None
       containerId: Optional[str] = None
       aliasOf: Optional[str] = None
+      supportedVDiskFormats: list[str] = []
+      logicalSectorSize: Optional[int] = None
+      physicalSectorSize: Optional[int] = None
 
    class Capability(DynamicData):
       directoryHierarchySupported: bool

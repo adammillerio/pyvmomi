@@ -1,4 +1,4 @@
-# Copyright (c) 2006-2024 Broadcom. All Rights Reserved.
+# Copyright (c) 2006-2025 Broadcom. All Rights Reserved.
 # Broadcom Confidential. The term "Broadcom" refers to Broadcom Inc.
 # and/or its subsidiaries.
 
@@ -67,6 +67,7 @@ class DatastoreBrowser(ManagedObject):
          diskExtents: Optional[bool] = None
          thin: Optional[bool] = None
          encryption: Optional[bool] = None
+         sectorFormat: Optional[bool] = None
 
       filter: Optional[Filter] = None
       details: Optional[Details] = None
@@ -110,6 +111,7 @@ class DatastoreBrowser(ManagedObject):
       diskExtents: list[str] = []
       thin: Optional[bool] = None
       encryption: Optional[VmDiskEncryptionInfo] = None
+      sectorFormat: Optional[str] = None
 
    class FolderInfo(FileInfo):
       pass

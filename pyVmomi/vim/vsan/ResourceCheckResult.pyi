@@ -1,4 +1,4 @@
-# Copyright (c) 2006-2024 Broadcom. All Rights Reserved.
+# Copyright (c) 2006-2025 Broadcom. All Rights Reserved.
 # Broadcom Confidential. The term "Broadcom" refers to Broadcom Inc.
 # and/or its subsidiaries.
 
@@ -6,8 +6,10 @@
 
 from datetime import datetime
 
+from typing import ClassVar
 from typing import Optional
 
+from pyVmomi.VmomiSupport import Enum
 from pyVmomi.VmomiSupport import long
 
 from pyVmomi.vmodl import LocalizableMessage
@@ -19,6 +21,10 @@ from pyVmomi.vim.vsan import FaultDomainResourceCheckResult
 from pyVmomi.vim.vsan import VsanHealthThreshold
 
 class ResourceCheckResult(EntityResourceCheckDetails):
+   class ResourceCheckDedupStoreHealthState(Enum):
+      Inaccessible: ClassVar['ResourceCheckDedupStoreHealthState'] = 'Inaccessible'
+      Noncompliant: ClassVar['ResourceCheckDedupStoreHealthState'] = 'Noncompliant'
+
    timestamp: datetime
    status: str
    messages: list[LocalizableMessage] = []
@@ -29,3 +35,4 @@ class ResourceCheckResult(EntityResourceCheckDetails):
    capacityThreshold: Optional[VsanHealthThreshold] = None
    health: Optional[VsanClusterHealthSummary] = None
    dataToResync: Optional[long] = None
+   dedupStoreHealth: Optional[str] = None

@@ -1,4 +1,4 @@
-# Copyright (c) 2006-2024 Broadcom. All Rights Reserved.
+# Copyright (c) 2006-2025 Broadcom. All Rights Reserved.
 # Broadcom Confidential. The term "Broadcom" refers to Broadcom Inc.
 # and/or its subsidiaries.
 
@@ -45,6 +45,7 @@ class VirtualDiskOption(VirtualDeviceOption):
       growable: bool
       hotGrowable: bool
       uuid: bool
+      virtualDiskFormat: Optional[ChoiceOption] = None
 
    class FlatVer1BackingOption(VirtualDeviceOption.FileBackingOption):
       diskMode: ChoiceOption
@@ -67,6 +68,7 @@ class VirtualDiskOption(VirtualDeviceOption):
       eagerlyScrub: BoolOption
       deltaDiskFormat: ChoiceOption
       deltaDiskFormatsSupported: list[DeltaDiskFormatsSupported] = []
+      virtualDiskFormat: Optional[ChoiceOption] = None
 
    class SeSparseBackingOption(VirtualDeviceOption.FileBackingOption):
       diskMode: ChoiceOption
@@ -75,6 +77,7 @@ class VirtualDiskOption(VirtualDeviceOption):
       hotGrowable: bool
       uuid: bool
       deltaDiskFormatsSupported: list[DeltaDiskFormatsSupported] = []
+      virtualDiskFormat: Optional[ChoiceOption] = None
 
    class RawDiskVer2BackingOption(VirtualDeviceOption.DeviceBackingOption):
       descriptorFileNameExtensions: ChoiceOption
@@ -88,6 +91,7 @@ class VirtualDiskOption(VirtualDeviceOption):
       compatibilityMode: ChoiceOption
       diskMode: ChoiceOption
       uuid: bool
+      virtualDiskFormat: Optional[ChoiceOption] = None
 
    class LocalPMemBackingOption(VirtualDeviceOption.FileBackingOption):
       diskMode: ChoiceOption

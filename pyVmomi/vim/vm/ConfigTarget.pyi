@@ -1,4 +1,4 @@
-# Copyright (c) 2006-2024 Broadcom. All Rights Reserved.
+# Copyright (c) 2006-2025 Broadcom. All Rights Reserved.
 # Broadcom Confidential. The term "Broadcom" refers to Broadcom Inc.
 # and/or its subsidiaries.
 
@@ -34,6 +34,7 @@ from pyVmomi.vim.vm import SerialInfo
 from pyVmomi.vim.vm import SgxTargetInfo
 from pyVmomi.vim.vm import SoundInfo
 from pyVmomi.vim.vm import SriovInfo
+from pyVmomi.vim.vm import SubnetInfo
 from pyVmomi.vim.vm import UsbInfo
 from pyVmomi.vim.vm import VFlashModuleInfo
 from pyVmomi.vim.vm import VendorDeviceGroupInfo
@@ -51,6 +52,7 @@ class ConfigTarget(DynamicData):
    opaqueNetwork: list[OpaqueNetworkInfo] = []
    distributedVirtualPortgroup: list[DistributedVirtualPortgroupInfo] = []
    distributedVirtualSwitch: list[DistributedVirtualSwitchInfo] = []
+   subnetInfo: list[SubnetInfo] = []
    cdRom: list[CdromInfo] = []
    serial: list[SerialInfo] = []
    parallel: list[ParallelInfo] = []
@@ -79,3 +81,5 @@ class ConfigTarget(DynamicData):
    vendorDeviceGroupInfo: list[VendorDeviceGroupInfo] = []
    maxSimultaneousThreads: Optional[int] = None
    dvxClassInfo: list[DvxClassInfo] = []
+   sevSnpSupported: Optional[bool] = None
+   tdxSupported: Optional[bool] = None
