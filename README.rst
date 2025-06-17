@@ -42,7 +42,7 @@ Unit tests can be invoked by using the `tox <https://testrun.org/tox/>`_ command
 configure multiple python interpreters so that you can test in all the
 environments listed in ``tox.ini`` or you will have to run ``tox`` with the
 ``-e`` flag to run only in your version of python. For example, if you only
-have Python 2.7 then ``tox -e py27`` will limit your test run to Python 2.7.
+have Python 3.9 then ``tox -e py39`` will limit your test run to Python 3.9.
 
 Contributing
 ============
@@ -58,7 +58,7 @@ For general language neutral documentation of vSphere Management API see:
 
 Python Support
 ==============
-* pyVmomi supports Python 3.4+
+* pyVmomi supports Python 3.9+
 
 Versioning
 ====================

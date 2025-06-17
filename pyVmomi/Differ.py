@@ -1,12 +1,13 @@
-# Copyright (c) 2008-2024 Broadcom. All Rights Reserved.
+# Copyright (c) 2008-2025 Broadcom. All Rights Reserved.
 # The term "Broadcom" refers to Broadcom Inc. and/or its subsidiaries.
 
 # Diff any two objects
 
 import logging
 
-import six
-from six.moves import zip
+from .five import PY3
+if not PY3:
+    from .five import zip
 
 from .VmomiSupport import F_LINK, F_OPTIONAL, GetWsdlName, Type, types
 
@@ -18,19 +19,15 @@ def LogIf(condition, message):
     if condition:
         __Log__.debug(message)
 
+_primitive_types = (types.bool, types.byte, types.short, types.double, types.float,
+                    types.PropertyPath, types.ManagedMethod,
+                    types.datetime, types.URI, types.binary, type)
+
+_primitive_types += (int, str) if PY3 else (int, long, basestring)
 
 def IsPrimitiveType(obj):
     """See if the passed in type is a Primitive Type"""
-    return (isinstance(obj, types.bool) or isinstance(obj, types.byte)
-            or isinstance(obj, types.short)
-            or isinstance(obj, six.integer_types)
-            or isinstance(obj, types.double) or isinstance(obj, types.float)
-            or isinstance(obj, six.string_types)
-            or isinstance(obj, types.PropertyPath)
-            or isinstance(obj, types.ManagedMethod)
-            or isinstance(obj, types.datetime) or isinstance(obj, types.URI)
-            or isinstance(obj, types.binary) or isinstance(obj, type))
-
+    return isinstance(obj, _primitive_types)
 
 class Differ:
     """Class for comparing two Objects"""

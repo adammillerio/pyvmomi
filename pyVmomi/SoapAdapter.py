@@ -1,5 +1,6 @@
-# Copyright (c) 2005-2024 Broadcom. All Rights Reserved.
-# The term "Broadcom" refers to Broadcom Inc. and/or its subsidiaries.
+# Copyright (c) 2005-2025 Broadcom. All Rights Reserved.
+# The term "Broadcom" refers to Broadcom Inc.
+# and/or its subsidiaries.
 
 import base64
 import contextlib
@@ -17,13 +18,20 @@ from xml.parsers.expat import ExpatError, ParserCreate
 # Define our own xml escape instead
 # from xml.sax.saxutils import escape
 
-import six
-from six import PY3
-from six.moves import StringIO, zip
-from six.moves.urllib.parse import urlparse
-from six.moves.http_cookies import SimpleCookie
-from six.moves.http_client import (HTTPConnection, HTTPSConnection,
-                                   HTTPException)
+from .five import (PY3, binary_type, str_type, text_type,
+                   iteritems, HTTPConnection, HTTPSConnection, urlparse)
+if PY3:
+    from io import StringIO
+    from http.client import HTTPException
+    from http.cookies import SimpleCookie
+else:
+    from StringIO import StringIO
+    from httplib import HTTPException
+    from Cookie import SimpleCookie
+    from .five import zip
+
+
+
 
 from . import Iso8601
 from .StubAdapterAccessorImpl import StubAdapterAccessorMixin
@@ -38,11 +46,8 @@ from .Security import VerifyCert, VerifyCertThumbprint
 from .Version import kind
 from . import version_info_str
 
-# Deprecated
-from . import _legacyThumbprintException
-if _legacyThumbprintException:
-    from .Security import ThumbprintMismatchException  # noqa: F401
-
+numeric_types = (float,)  # shouldn't we support double as well?
+numeric_types += (int,) if PY3 else (int, long)
 
 # Timeout value used for idle connections in client connection pool.
 # Default value is 900 seconds (15 minutes).
@@ -74,7 +79,7 @@ SOAP_BODY_TAG = "{0}:Body".format(SOAP_NSMAP[XMLNS_SOAPENV])
 
 NSMAP_DEF = ' '.join([
     'xmlns:{}="{}"'.format(prefix, urn)
-    for urn, prefix in six.iteritems(SOAP_NSMAP)
+    for urn, prefix in iteritems(SOAP_NSMAP)
 ])
 
 SOAP_ENVELOPE_START = '<{} {}>\n'.format(SOAP_ENVELOPE_TAG, NSMAP_DEF)
@@ -293,7 +298,7 @@ class SoapSerializer:
         self.writer = writer
         self.version = version
         self.nsMap = nsMap and nsMap or {}
-        for ns, prefix in six.iteritems(self.nsMap):
+        for ns, prefix in iteritems(self.nsMap):
             if prefix == '':
                 self.defaultNS = ns
                 break
@@ -510,12 +515,12 @@ class SoapSerializer:
             result = val and "true" or "false"
             self.writer.write('<{0}{1}>{2}</{0}>'.format(
                 info.name, attr, result))
-        elif isinstance(val, six.integer_types) or isinstance(val, float):
+        elif isinstance(val, numeric_types):
             if info.type is object:
                 nsattr, qName = self._QName(Type(val), currDefNS)
                 attr += '{0} {1}type="{2}"'.format(
                     nsattr, self.xsiPrefix, qName)
-            result = six.text_type(val)
+            result = text_type(val)
             self.writer.write('<{0}{1}>{2}</{0}>'.format(
                 info.name, attr, result))
         elif isinstance(val, Enum):
@@ -535,7 +540,7 @@ class SoapSerializer:
                     attr += '{0} {1}type="{2}"'.format(
                         nsattr, self.xsiPrefix, qName)
 
-            if isinstance(val, six.binary_type):
+            if isinstance(val, binary_type):
                 # Use UTF-8 rather than self.encoding.  self.encoding is for
                 # output of serializer, while 'val' is our input.
                 # And regardless of what our output is, our input should be
@@ -596,7 +601,7 @@ def Deserialize(data, resultType=object, stub=None):
     # But in python3 the input become unicode and the handling will fall into
     # ParseFile case.
     # Adding unicode input support to make it more test friendly.
-    if isinstance(data, six.binary_type) or isinstance(data, six.text_type):
+    if isinstance(data, binary_type) or isinstance(data, text_type):
         parser.Parse(data)
     else:
         parser.ParseFile(data)
@@ -924,8 +929,8 @@ class SoapResponseDeserializer(ExpatDeserializerNSHandlers):
         # purpose. But in python3 the input become unicode and the handling
         # will fall into ParseFile case.
         # Adding unicode input support to make it more test friendly.
-        if isinstance(response, six.binary_type) or isinstance(
-                response, six.text_type):
+        if isinstance(response, binary_type) or isinstance(
+                response, text_type):
             self.parser.Parse(response)
         else:
             self.parser.ParseFile(response)
@@ -1026,9 +1031,9 @@ class SoapStubAdapterBase(StubAdapterBase):
 
         if reqContexts or samlToken:
             result.append(SOAP_HEADER_START)
-            for key, val in six.iteritems(reqContexts):
+            for key, val in iteritems(reqContexts):
                 # Note: Support req context of string type only
-                if not isinstance(val, six.string_types):
+                if not isinstance(val, str_type):
                     raise TypeError(
                         "Request context key ({0}) has non-string value"
                         " ({1}) of {2}".format(key, val, type(val)))
@@ -1349,6 +1354,8 @@ class SoapStubAdapter(SoapStubAdapterBase):
                            or url_scheme_specifier == "https" and HTTPSConnection)
             if not self.scheme:
                 raise Exception("Invalid URL scheme: " + url_scheme_specifier)
+            if not port:
+                port = self.scheme.default_port
         else:
             port, self.scheme = (port < 0 and (-port, HTTPConnection)
                                  or (port, HTTPSConnection))
@@ -1545,7 +1552,10 @@ class SoapStubAdapter(SoapStubAdapterBase):
 
             # Python fails if both host:port pair
             # and port are used for HTTPConnection
-            host = self.host.rsplit(":", 1)[0]
+            if self.host[0] == '[' and self.host[-1] == ']':
+                host = self.host
+            else:
+                host = self.host.rsplit(":", 1)[0]
             port = self.port
             conn_host = getattr(self, 'httpProxyHost', host)
             conn_port = getattr(self, 'httpProxyPort', port)

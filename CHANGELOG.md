@@ -2,6 +2,43 @@
 
 ## [Unreleased] - Release name - yyyy-mm-dd
 
+## [9.0.0.0] - VCF 9.0 Release - 2025-06-17
+
+### Bindings
+- Updated bindings with support for the new vSphere 9.0 APIs. For details, refer to the [API reference guide](https://developer.broadcom.com/xapis/vsphere-web-services-api/latest/)
+- New features of vSphere 9.0 based on REST APIs are available via the [vSphere Automation SDK for Python](https://github.com/vmware/vsphere-automation-sdk-python)
+
+### Added
+- SoapStubAdapter and the connect.py wrappers now allows passing a serverPemCert parameter ([`9a8956f`](https://github.com/vmware/pyvmomi/commit/9a8956f))
+- Added TOML config
+
+## Changes
+- Dependency on pyOpenSSL is limited to '<24.3.0' because of breaking changes.
+- Dependency on "six" is removed
+
+### Breaking changes
+- SoapAdapter.HTTPProxyConnection is removed ([`9a8956f`](https://github.com/vmware/pyvmomi/commit/9a8956f))
+- SoapAdapter.SSLTunnelConnection is replaced by SoapAdapter._SSLTunnelConnection which inherits Python's standard HTTPSConnection ([`9a8956f`](https://github.com/vmware/pyvmomi/commit/9a8956f))
+- SoapAdapter.UnixSocketConnection is replaced by SoapAdapter._UnixSocketConnection which inherits Python's standard HTTPConnection ([`9a8956f`](https://github.com/vmware/pyvmomi/commit/9a8956f))
+- 'publicVersions' and 'dottedVersions' aliases are removed. Replaced by the 'ltsVersions' alias.
+- pyVmomi.VmomiSupport.VmomiJSONEncoder is replaced by pyVmomi.VmomiJSONEncoder.VmomiJSONEncoder
+- pyVmomi.VmomiSupport.templateOf() is replaced by pyVmomi.VmomiJSONEncoder.templateOf()
+- pyVmomi.ThumbprintMismatchException is replaced by pyVmomi.Security.ThumbprintMismatchException
+- pyVmomi.SoapAdapter.ThumbprintMismatchException is replaced by pyVmomi.Security.ThumbprintMismatchException
+- Settings: 'legacyThumbprintException' is removed.
+- Settings: 'binaryIsBytearray' is removed.
+- Settings: 'allowGetSet' is removed. The behavior is set to match allowGetSet = True
+- Settings: 'allowCapitalizedNames' is removed. The behavior is set to match allowCapitalizedNames = False
+- pyVmomiSettings.py is deleted
+- pyVmomi feature toggling is removed. Feature.py is deleted
+- setup.py, setup.cfg, requirements.txt, test-requirements.txt and tox.ini are deleted. Replaced by pyproject.toml
+- 'b64token' and 'mechanism' parameters are disabled for pyVim.Connect() and pyVim.SmartConnect(). Replaced by 'token' and 'tokenType'.
+
+## [8.0.3.0.1] - Maintenance Patch 1 for 8.0U3 - 2024-06-26
+
+### Changes
+- Fixed cyclic dependency in setup.py that broke the greenfield installation of pyVmomi ([`e4fd849`](https://github.com/vmware/pyvmomi/commit/e4fd849))
+
 ## [8.0.3.0] - vSphere 8.0U3 Release - 2024-06-25
 
 ### Bindings
